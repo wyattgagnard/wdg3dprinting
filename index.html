@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WDG 3D Printing</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #FF6B1A;
+    --dark: #0D0E10;
+    --panel: #161719;
+    --border: #2a2b2e;
+    --text: #e8e8e8;
+    --muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 40px;
+    background: rgba(13,14,16,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    color: var(--orange);
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; letter-spacing: 1.5px; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--orange); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 40px 80px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 50%, rgba(255,107,26,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 10% 80%, rgba(255,107,26,0.04) 0%, transparent 50%);
+  }
+
+  /* Grid overlay */
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,107,26,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,26,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 580px;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid rgba(255,107,26,0.4);
+    padding: 5px 14px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 9vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span { color: var(--orange); }
+
+  .hero-sub {
+    margin-top: 20px;
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 400px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-cta {
+    margin-top: 36px;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 700;
+    padding: 14px 32px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  .btn-primary:hover { background: #ff8240; transform: translateY(-2px); }
+
+  /* Hero image */
+  .hero-image {
+    position: absolute;
+    right: -20px; top: 50%;
+    transform: translateY(-50%);
+    width: 52%;
+    max-width: 680px;
+    animation: fadeIn 1s 0.2s ease both;
+    z-index: 1;
+  }
+  .hero-image img {
+    width: 100%;
+    filter: drop-shadow(0 20px 60px rgba(255,107,26,0.2));
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: center; gap: 80px;
+    padding: 28px 40px;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; color: var(--orange);
+  }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-top: 2px;
+  }
+
+  /* PRODUCTS */
+  .products {
+    padding: 100px 40px;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .section-header { margin-bottom: 60px; }
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+  }
+
+  .product-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .product-card:hover {
+    border-color: rgba(255,107,26,0.5);
+    transform: translateY(-4px);
+  }
+
+  .product-img {
+    width: 100%; aspect-ratio: 1;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+  }
+  .product-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .product-card:hover .product-img img { transform: scale(1.06); }
+
+  .product-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+    background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+  }
+
+  .product-badge {
+    position: absolute; top: 12px; left: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+    background: var(--orange); color: #fff;
+    padding: 3px 10px;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+  }
+
+  .out-of-stock-badge {
+    background: #444;
+  }
+
+  .product-info { padding: 20px; }
+  .product-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .product-desc {
+    font-size: 0.85rem; color: var(--muted); margin-top: 6px; line-height: 1.5;
+  }
+  .product-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px;
+  }
+  .product-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem; color: var(--orange);
+  }
+
+  .btn-buy {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700;
+    background: var(--orange); color: #fff;
+    border: none; cursor: pointer; padding: 10px 18px;
+    clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%);
+    transition: background 0.2s;
+  }
+  .btn-buy:hover { background: #ff8240; }
+  .btn-buy:disabled {
+    background: #333; color: #555; cursor: not-allowed;
+  }
+
+  .sold-out-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+    color: #555;
+  }
+
+  /* ABOUT */
+  .about {
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 100px 40px;
+  }
+  .about-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .about-text .section-title { margin-top: 10px; margin-bottom: 20px; }
+  .about-text p {
+    color: var(--muted); line-height: 1.8; margin-bottom: 16px;
+    font-size: 1rem;
+  }
+  .about-img-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  }
+  .about-img-grid img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: cover;
+    filter: grayscale(20%);
+    transition: filter 0.3s;
+  }
+  .about-img-grid img:hover { filter: grayscale(0%); }
+  .about-img-grid img:first-child {
+    grid-column: span 2;
+    aspect-ratio: 2/1;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 3px; color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .footer-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+    color: #444;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .hero-image { display: none; }
+    .hero-content { max-width: 100%; }
+    .stats-bar { gap: 30px; flex-wrap: wrap; padding: 24px 20px; }
+    .products { padding: 60px 20px; }
+    .about { padding: 60px 20px; }
+    .about-inner { grid-template-columns: 1fr; gap: 40px; }
+    footer { padding: 30px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">WDG 3D</div>
+  <div class="nav-links">
+    <a href="#products">Shop</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">✈ Handcrafted in Colorado</div>
+    <h1>WDG<br><span>3D</span><br>Printing</h1>
+    <p class="hero-sub">Custom 3D printed jet models — designed and built by a kid who loves making things. Every model is printed to order.</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary">Shop Models</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="IMG_0319.jpg" alt="3D Printed Jet Model">
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Designed from scratch</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3D</div>
+    <div class="stat-label">Printed in Colorado</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Multi</div>
+    <div class="stat-label">Color filament</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="section-header">
+    <div class="section-tag">// Shop</div>
+    <h2 class="section-title">Current Models</h2>
+  </div>
+
+  <div class="product-grid">
+
+    <!-- Basic Jet -->
+    <div class="product-card">
+      <div class="product-img">
+        <img src="IMG_0318.jpg" alt="Basic Jet">
+        <span class="product-badge">Popular</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Basic Jet</div>
+        <div class="product-desc">The original WDG fighter jet. Grey body with orange details and a display stand.</div>
+        <div class="product-footer">
+          <div class="product-price">$--</div>
+          <button class="btn-buy" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camo Jet -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-placeholder">✈</div>
+        <span class="product-badge out-of-stock-badge">Out of Stock</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Camo Jet</div>
+        <div class="product-desc">The fighter jet in a green and tan camouflage colorway. Includes display stand.</div>
+        <div class="product-footer">
+          <div class="product-price">$--</div>
+          <span class="sold-out-text">Out of stock</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jet Bundle -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-placeholder">✈✈</div>
+        <span class="product-badge">Best Value</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Jet Bundle</div>
+        <div class="product-desc">Get both jets — 1 basic + 1 camo — plus stands for both. Best deal in the collection.</div>
+        <div class="product-footer">
+          <div class="product-price">$--</div>
+          <button class="btn-buy" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stands Bundle -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-placeholder">🔩</div>
+        <span class="product-badge out-of-stock-badge">Out of Stock</span>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Stands Bundle</div>
+        <div class="product-desc">Extra display stands for your jet collection. Keeps them standing up straight.</div>
+        <div class="product-footer">
+          <div class="product-price">$--</div>
+          <span class="sold-out-text">Out of stock</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-text">
+      <div class="section-tag">// About</div>
+      <h2 class="section-title">Made by a<br><span style="color:var(--orange)">Kid Who<br>Builds</span></h2>
+      <p>Hey! I'm the founder of WDG 3D Printing. I design and print all my own models using a 3D printer. I came up with the jet designs myself and keep improving them.</p>
+      <p>Every model is printed and shipped from Colorado. I'm always working on new designs — check back soon for new models!</p>
+      <p style="color: #555; font-size: 0.85rem;">Sales through this website and Facebook Marketplace only. All models are original WDG designs.</p>
+    </div>
+    <div class="about-img-grid">
+      <img src="IMG_0320.jpg" alt="WDG Jet Model">
+      <img src="IMG_0318.jpg" alt="WDG Jet Model">
+      <img src="IMG_0319.jpg" alt="WDG Jet Model Top View">
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-logo">WDG 3D Printing</div>
+  <div class="footer-sub">Handcrafted in Colorado &nbsp;·&nbsp; All designs original &nbsp;·&nbsp; © 2025 WDG3dPrinting</div>
+</footer>
+
+</body>
+</html>
